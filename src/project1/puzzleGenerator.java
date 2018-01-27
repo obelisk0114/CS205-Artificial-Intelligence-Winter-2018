@@ -92,6 +92,10 @@ public class puzzleGenerator {
 			System.out.println();
 		}
 	}
+	
+	String[][] getTable() {
+		return table;
+	}
 
 	void swap(int x1, int y1, int x2, int y2) {
 		String tmp = table[y1][x1];
