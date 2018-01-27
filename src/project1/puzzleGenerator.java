@@ -14,22 +14,29 @@ public class puzzleGenerator {
 			System.out.println("Error puzzle.");
 			System.exit(1);
 		}
-
-		table = new String[length][length];
-		for (int i = 0; i < length; i++) {
-			for (int j = 0; j < length; j++) {
-				table[i][j] = Integer.toString(i * length + j + 1);
-				if (i == (length - 1) && j == (length - 1)) {
+		setPuzzleGenerator(length, length);
+	}
+	
+	public puzzleGenerator(int x, int y) {
+		setPuzzleGenerator(x, y);
+	}
+	
+	public void setPuzzleGenerator(int x, int y) {
+		table = new String[y][x];
+		for (int i = 0; i < y; i++) {
+			for (int j = 0; j < x; j++) {
+				table[i][j] = Integer.toString(i * x + j + 1);
+				if (i == (y - 1) && j == (x - 1)) {
 					table[i][j] = "*";
 				}
 			}
 		}
 
-		space[0] = length - 1;      // x
-		space[1] = length - 1;      // y
+		space[0] = x - 1;
+		space[1] = y - 1;
 	}
 
-	void generate(int n) {
+	void generate() {
 		int step = stepGenerate();
 		for (int i = 0; i < step; i++) {
 			move(space[0], space[1]);
@@ -38,11 +45,12 @@ public class puzzleGenerator {
 	}
 
 	void move(int x1, int y1) {
-		int n = table.length;
+		int yLength = table.length;
+		int xLength = table[0].length;
 		boolean leftMove = !(x1 == 0);
-		boolean rightMove = !(x1 == (n - 1));
+		boolean rightMove = !(x1 == (xLength - 1));
 		boolean upMove = !(y1 == 0);
-		boolean downMove = !(y1 == (n - 1));
+		boolean downMove = !(y1 == (yLength - 1));
 
 		List<String> canMove = new ArrayList<String>(4);
 		if (leftMove)
@@ -84,9 +92,10 @@ public class puzzleGenerator {
 	}
 
 	void printTable() {
-		int n = table.length;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
+		int y = table.length;
+		int x = table[0].length;
+		for (int i = 0; i < y; i++) {
+			for (int j = 0; j < x; j++) {
 				System.out.print(table[i][j] + " ");
 			}
 			System.out.println();
