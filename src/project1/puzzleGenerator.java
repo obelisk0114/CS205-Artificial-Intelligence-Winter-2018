@@ -105,6 +105,19 @@ public class puzzleGenerator {
 	String[][] getTable() {
 		return table;
 	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		int y = table.length;
+		int x = table[0].length;
+		for (int i = 0; i < y; i++) {
+			for (int j = 0; j < x; j++) {
+				sb.append(table[i][j] + " ");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();		
+	}
 
 	void swap(int x1, int y1, int x2, int y2) {
 		String tmp = table[y1][x1];
