@@ -63,6 +63,10 @@ public class puzzle {
 		return true;
 	}
 	
+	int getDepth() {
+		return depth;
+	}
+	
 	// movement functions
 	puzzle moveSpaceUp(){
 		puzzle clone = this.clone();
@@ -155,7 +159,7 @@ public class puzzle {
 			}
 		}
 		
-		//System.out.println("Inversion = " + inversion);
+		System.out.println("Inversions = " + inversion);
 		
 		// If the grid width is odd, then the number of inversions in a solvable 
 		// situation is even.
