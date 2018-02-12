@@ -1,6 +1,6 @@
 package project1;
 
-public class puzzle {
+public class puzzle implements Cloneable {
 	private int[][] board;
 	private int[] blankIndex = new int[2];
 	private int depth;
@@ -201,13 +201,24 @@ public class puzzle {
 	
 	@Override
 	protected puzzle clone() {
-		try {
-			puzzle copy = (puzzle) super.clone();
-			copy.board = board.clone();
-			return copy;
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e.getLocalizedMessage());
+//		try {
+//			puzzle copy = (puzzle) super.clone();
+//			for (int i = 0; i < board.length; i++) {
+//				System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
+//			}
+//			copy.blankIndex = blankIndex.clone();
+//			return copy;
+//		} catch (CloneNotSupportedException e) {
+//			throw new RuntimeException(e.getLocalizedMessage());
+//		}
+		
+		puzzle copy = new puzzle(board[0].length, board.length);
+		copy.blankIndex = blankIndex.clone();
+		copy.depth = depth;
+		for (int i = 0; i < board.length; i++) {
+			System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
 		}
+		return copy;
 	}
 	
 	public boolean equals(puzzle otherPuzzleSolver) {

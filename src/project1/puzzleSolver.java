@@ -3,18 +3,20 @@ package project1;
 import java.util.Scanner;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 public class puzzleSolver {
 
 	public static void main(String[] args) {
-		/**     For a puzzle generator
+		/**     For a puzzle generator     **/
+		/*
 		//puzzleGenerator puzzle = new puzzleGenerator(7, 3);
 		puzzleGenerator puzzle = new puzzleGenerator(8);
 		puzzle.generate();
 		*/
 		
 		puzzle puzzleBD;
-		BoardComparator heuristic;
+		puzzleComparator heuristic;
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("This is a n-puzzle solver.\n"
 				+ "Choose 1 for a square puzzle.\n"
@@ -63,18 +65,18 @@ public class puzzleSolver {
 			heuristic = new ManhattenDistance();
 			break;
 		default:
-			keyboard.close();
 			throw new RuntimeException("Unacceptable input");
 		}
 		keyboard.close();
 		
 		if (xLength == yLength && !puzzleBD.checkSquareSolvability()) {			
 			System.out.println("Unsolvable square puzzle.");
+			System.exit(0);
 		}
 		search(puzzleBD, heuristic);
 	}
 	
-	static boolean search(puzzle init, BoardComparator cmp) {
+	static boolean search(puzzle init, puzzleComparator cmp) {
 		long startTime = System.currentTimeMillis();
 
 		int maxNodes = 0;
@@ -82,7 +84,33 @@ public class puzzleSolver {
 		PriorityQueue<puzzle> nodes = new PriorityQueue<puzzle>(1, cmp);
 		checkNode(nodes, init);
 		while (!nodes.isEmpty()) {
-			;
+			maxNodes = nodes.size() > maxNodes? nodes.size() : maxNodes;
+			puzzle currentState = nodes.poll();
+			System.out.printf("The best state to expand with a g(n) = %d and "
+					+ "h(n) = %d is... %n", currentState.getDepth(), 
+					cmp.heuristic(currentState));
+			System.out.println(currentState + "Expanding...\n");
+			totalNodes++;
+			
+			if (checkNode(nodes, currentState.moveSpaceDown()) 
+					|| checkNode(nodes, currentState.moveSpaceUp())
+					|| checkNode(nodes, currentState.moveSpaceLeft())
+					|| checkNode(nodes, currentState.moveSpaceRight())) {
+				long endTime = System.currentTimeMillis();
+				System.out.printf("To solve this problem the search algorithm "
+						+ "expanded a total of %d nodes. %n", totalNodes);
+				System.out.printf("The maximum number of nodes in the queue at any "
+						+ "one time was %d. %n", maxNodes);
+				System.out.printf("The depth of the goal node was %d%n", 
+						currentState.getDepth() + 1);
+				System.out.println("That took " + (endTime - startTime) + 
+						" milliseconds");
+				return true;
+			}
+//			for (puzzle u : nodes) {
+//				System.out.println(u.toString());
+//			}
+//			break;
 		}
 		return false;
 	}
@@ -113,11 +141,11 @@ public class puzzleSolver {
 	
 }
 
-interface BoardComparator extends Comparator<puzzle> {
+interface puzzleComparator extends Comparator<puzzle> {
 	int heuristic(puzzle b);
 }
 
-class UniformCostComparator implements BoardComparator {
+class UniformCostComparator implements puzzleComparator {
 	@Override
 	public int compare(puzzle o1, puzzle o2) {
 		return o1.getDepth() - o2.getDepth();
@@ -128,7 +156,7 @@ class UniformCostComparator implements BoardComparator {
 	}
 }
 
-class MisplacedTile implements BoardComparator {
+class MisplacedTile implements puzzleComparator {
 	@Override
 	public int compare(puzzle o1, puzzle o2) {
 		return (o1.getDepth() + o1.misplacedTile()) 
@@ -140,7 +168,7 @@ class MisplacedTile implements BoardComparator {
 	}
 }
 
-class ManhattenDistance implements BoardComparator {
+class ManhattenDistance implements puzzleComparator {
 	@Override
 	public int compare(puzzle o1, puzzle o2) {
 		return (o1.getDepth() + o1.manhattenDistance()) 
