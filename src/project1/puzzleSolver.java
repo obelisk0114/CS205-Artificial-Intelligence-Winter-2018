@@ -3,7 +3,6 @@ package project1;
 import java.util.Scanner;
 import java.util.PriorityQueue;
 import java.util.Comparator;
-import java.util.TreeSet;
 
 public class puzzleSolver {
 
@@ -107,6 +106,7 @@ public class puzzleSolver {
 						" milliseconds");
 				return true;
 			}
+//			System.out.println("In the nodes...");
 //			for (puzzle u : nodes) {
 //				System.out.println(u.toString());
 //			}

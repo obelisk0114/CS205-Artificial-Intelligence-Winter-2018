@@ -25,29 +25,31 @@ public class puzzle implements Cloneable {
 		board = new int[y][x];
 	}
 	
-	public puzzle(puzzle aPuzzleSolver) {
-		if (aPuzzleSolver == null) {     // Not a real puzzleSolver.
+	public puzzle(int[][] board, int[] blankIndex, int depth) {
+		if (board == null) {     // Not a real puzzleSolver.
 			System.out.println("Fatal Error.");
 			System.exit(1);
 		}
 
-		board = aPuzzleSolver.board;
-		blankIndex = aPuzzleSolver.blankIndex;
-		depth = aPuzzleSolver.depth;
+		this.board = new int[board.length][board[0].length];
+		this.setBoard(board);
+		this.depth = depth;
+	}
+	
+	public puzzle(puzzle aPuzzle) {
+		this(aPuzzle.board, aPuzzle.blankIndex, aPuzzle.depth);
 	}
 	
 	public void setBoard(int[][] values) {
-		OuterLoop:
-		for(int i = 0; i < values.length; i++){
+		for (int i = 0; i < values.length; i++) {
 			for (int j = 0; j < values[i].length; j++) {
-				if(values[i][j]==0){
-					blankIndex[0] = i;    // y
-					blankIndex[1] = j;    // x
-					break OuterLoop;
+				board[i][j] = values[i][j];
+				if (values[i][j] == 0) {
+					blankIndex[0] = i; // y
+					blankIndex[1] = j; // x
 				}
 			}
 		}
-		board = values;
 		depth = 0;
 	}
 	
@@ -201,24 +203,15 @@ public class puzzle implements Cloneable {
 	
 	@Override
 	protected puzzle clone() {
-//		try {
-//			puzzle copy = (puzzle) super.clone();
-//			for (int i = 0; i < board.length; i++) {
-//				System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
-//			}
-//			copy.blankIndex = blankIndex.clone();
-//			return copy;
-//		} catch (CloneNotSupportedException e) {
-//			throw new RuntimeException(e.getLocalizedMessage());
-//		}
+		return new puzzle(this);
 		
-		puzzle copy = new puzzle(board[0].length, board.length);
-		copy.blankIndex = blankIndex.clone();
-		copy.depth = depth;
-		for (int i = 0; i < board.length; i++) {
-			System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
-		}
-		return copy;
+//		puzzle copy = new puzzle(board[0].length, board.length);
+//		copy.blankIndex = blankIndex.clone();
+//		copy.depth = depth;
+//		for (int i = 0; i < board.length; i++) {
+//			System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
+//		}
+//		return copy;
 	}
 	
 	public boolean equals(puzzle otherPuzzleSolver) {
