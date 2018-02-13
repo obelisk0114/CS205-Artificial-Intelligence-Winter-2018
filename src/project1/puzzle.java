@@ -4,6 +4,7 @@ public class puzzle implements Cloneable {
 	private int[][] board;
 	private int[] blankIndex = new int[2];
 	private int depth;
+	private char predecessor;
 	
 	public puzzle() {
 		board = new int[][] { { 5, 1, 7, 3 }, { 9, 2, 11, 4 }, 
@@ -11,6 +12,7 @@ public class puzzle implements Cloneable {
 		blankIndex[0] = 3;    // y
 		blankIndex[1] = 0;    // x
 		depth = 0;
+		predecessor = '.';
 	}
 	
 	public puzzle(int total) {
@@ -25,7 +27,7 @@ public class puzzle implements Cloneable {
 		board = new int[y][x];
 	}
 	
-	public puzzle(int[][] board, int[] blankIndex, int depth) {
+	public puzzle(int[][] board, int[] blankIndex, int depth, char predecessor) {
 		if (board == null) {     // Not a real puzzleSolver.
 			System.out.println("Fatal Error.");
 			System.exit(1);
@@ -34,10 +36,11 @@ public class puzzle implements Cloneable {
 		this.board = new int[board.length][board[0].length];
 		this.setBoard(board);
 		this.depth = depth;
+		this.predecessor = predecessor;
 	}
 	
 	public puzzle(puzzle aPuzzle) {
-		this(aPuzzle.board, aPuzzle.blankIndex, aPuzzle.depth);
+		this(aPuzzle.board, aPuzzle.blankIndex, aPuzzle.depth, aPuzzle.predecessor);
 	}
 	
 	public void setBoard(int[][] values) {
@@ -51,6 +54,7 @@ public class puzzle implements Cloneable {
 			}
 		}
 		depth = 0;
+		predecessor = '.';
 	}
 	
 	boolean isSolved() {
@@ -69,6 +73,10 @@ public class puzzle implements Cloneable {
 		return depth;
 	}
 	
+	char getpredecessor() {
+		return predecessor;
+	}
+	
 	// movement functions
 	puzzle moveSpaceUp(){
 		puzzle clone = this.clone();
@@ -78,6 +86,7 @@ public class puzzle implements Cloneable {
 		clone.swap(blankIndex[1], blankIndex[0], blankIndex[1], blankIndex[0] - 1);
 		clone.blankIndex[0] -= 1;
 		clone.depth++;
+		clone.predecessor = 'U';
 		return clone;
 	}
 	
@@ -89,6 +98,7 @@ public class puzzle implements Cloneable {
 		clone.swap(blankIndex[1], blankIndex[0], blankIndex[1], blankIndex[0] + 1);
 		clone.blankIndex[0] += 1;
 		clone.depth++;
+		clone.predecessor = 'D';
 		return clone;
 	}
 	
@@ -100,6 +110,7 @@ public class puzzle implements Cloneable {
 		clone.swap(blankIndex[1], blankIndex[0], blankIndex[1] - 1, blankIndex[0]);
 		clone.blankIndex[1] -= 1;
 		clone.depth++;
+		clone.predecessor = 'L';
 		return clone;
 	}
 	
@@ -111,6 +122,7 @@ public class puzzle implements Cloneable {
 		clone.swap(blankIndex[1], blankIndex[0], blankIndex[1] + 1, blankIndex[0]);
 		clone.blankIndex[1] += 1;
 		clone.depth++;
+		clone.predecessor = 'R';
 		return clone;
 	}
 	
@@ -146,7 +158,6 @@ public class puzzle implements Cloneable {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				if (board[i][j] != 0) {
-					//int tmp = inversion;
 					int cur = i * board[0].length + j;
 					while (cur < board.length * board[0].length) {
 						int i1 = cur / board[0].length;
@@ -204,14 +215,6 @@ public class puzzle implements Cloneable {
 	@Override
 	protected puzzle clone() {
 		return new puzzle(this);
-		
-//		puzzle copy = new puzzle(board[0].length, board.length);
-//		copy.blankIndex = blankIndex.clone();
-//		copy.depth = depth;
-//		for (int i = 0; i < board.length; i++) {
-//			System.arraycopy(board[i], 0, copy.board[i], 0, board[0].length);
-//		}
-//		return copy;
 	}
 	
 	public boolean equals(puzzle otherPuzzleSolver) {

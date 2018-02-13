@@ -91,10 +91,36 @@ public class puzzleSolver {
 			System.out.println(currentState + "Expanding...\n");
 			totalNodes++;
 			
-			if (checkNode(nodes, currentState.moveSpaceDown()) 
-					|| checkNode(nodes, currentState.moveSpaceUp())
-					|| checkNode(nodes, currentState.moveSpaceLeft())
-					|| checkNode(nodes, currentState.moveSpaceRight())) {
+			boolean next;
+			char predecessor = currentState.getpredecessor();
+			switch(predecessor) {
+			case 'U':
+				next = checkNode(nodes, currentState.moveSpaceUp())
+						|| checkNode(nodes, currentState.moveSpaceLeft())
+						|| checkNode(nodes, currentState.moveSpaceRight());
+				break;
+			case 'D':
+				next = checkNode(nodes, currentState.moveSpaceDown())
+						|| checkNode(nodes, currentState.moveSpaceLeft())
+						|| checkNode(nodes, currentState.moveSpaceRight());
+				break;
+			case 'L':
+				next = checkNode(nodes, currentState.moveSpaceDown()) 
+						|| checkNode(nodes, currentState.moveSpaceUp())
+						|| checkNode(nodes, currentState.moveSpaceLeft());
+				break;
+			case 'R':
+				next = checkNode(nodes, currentState.moveSpaceDown()) 
+						|| checkNode(nodes, currentState.moveSpaceUp())
+						|| checkNode(nodes, currentState.moveSpaceRight());
+				break;
+			default:
+				next = checkNode(nodes, currentState.moveSpaceDown()) 
+						|| checkNode(nodes, currentState.moveSpaceUp())
+						|| checkNode(nodes, currentState.moveSpaceLeft())
+						|| checkNode(nodes, currentState.moveSpaceRight());
+			}
+			if (next) {
 				long endTime = System.currentTimeMillis();
 				System.out.printf("To solve this problem the search algorithm "
 						+ "expanded a total of %d nodes. %n", totalNodes);
