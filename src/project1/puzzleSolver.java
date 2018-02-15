@@ -81,7 +81,8 @@ public class puzzleSolver {
 		int maxNodes = 0;
 		int totalNodes = 0;
 		PriorityQueue<puzzle> nodes = new PriorityQueue<puzzle>(1, cmp);
-		checkNode(nodes, init);
+		boolean ini = checkNode(nodes, init);
+		int solutionDepth = 0;
 		while (!nodes.isEmpty()) {
 			maxNodes = nodes.size() > maxNodes? nodes.size() : maxNodes;
 			puzzle currentState = nodes.poll();
@@ -132,6 +133,8 @@ public class puzzleSolver {
 						" milliseconds");
 				return true;
 			}
+			solutionDepth = currentState.getDepth();
+			
 //			System.out.println("In the nodes...");
 //			for (puzzle u : nodes) {
 //				System.out.println(u.toString());
@@ -139,14 +142,21 @@ public class puzzleSolver {
 //			break;
 		}
 		
-		// Unsolvable
 		long endTime = System.currentTimeMillis();
-		System.out.println("Unsolvable puzzle !!!");
 		System.out.printf("Expanded a total of %d nodes. %n", totalNodes);
-		System.out.printf("The maximum number of nodes in the queue at any one time "
-				+ "was %d. %n", maxNodes);
+		System.out.printf("The maximum number of nodes in the queue at any "
+				+ "one time was %d. %n", maxNodes);
+		System.out.printf("The depth of the output node was %d%n", solutionDepth);
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
-		return false;
+		
+		// Unsolvable
+		if (!ini) {
+			System.out.println("Unsolvable puzzle !!!");
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	static int[][] inputPuzzle(Scanner keyboard, int xLength, int yLength) {
