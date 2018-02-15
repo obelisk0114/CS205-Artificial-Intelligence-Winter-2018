@@ -138,6 +138,14 @@ public class puzzleSolver {
 //			}
 //			break;
 		}
+		
+		// Unsolvable
+		long endTime = System.currentTimeMillis();
+		System.out.println("Unsolvable puzzle !!!");
+		System.out.printf("Expanded a total of %d nodes. %n", totalNodes);
+		System.out.printf("The maximum number of nodes in the queue at any one time "
+				+ "was %d. %n", maxNodes);
+		System.out.println("That took " + (endTime - startTime) + " milliseconds");
 		return false;
 	}
 	
