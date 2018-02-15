@@ -3,6 +3,7 @@ package project1;
 import java.util.Scanner;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.HashSet;
 
 public class puzzleSolver {
 
@@ -68,10 +69,10 @@ public class puzzleSolver {
 		}
 		keyboard.close();
 		
-		if (xLength == yLength && !puzzleBD.checkSquareSolvability()) {			
-			System.out.println("Unsolvable square puzzle.");
-			System.exit(0);
-		}
+//		if (xLength == yLength && !puzzleBD.checkSquareSolvability()) {			
+//			System.out.println("Unsolvable square puzzle.");
+//			System.exit(0);
+//		}
 		search(puzzleBD, heuristic);
 	}
 	
@@ -80,8 +81,9 @@ public class puzzleSolver {
 
 		int maxNodes = 0;
 		int totalNodes = 0;
+		HashSet<String> table = new HashSet<String>();
 		PriorityQueue<puzzle> nodes = new PriorityQueue<puzzle>(1, cmp);
-		checkNode(nodes, init);
+		checkNode(nodes, init, table);
 		while (!nodes.isEmpty()) {
 			maxNodes = nodes.size() > maxNodes? nodes.size() : maxNodes;
 			puzzle currentState = nodes.poll();
@@ -95,30 +97,30 @@ public class puzzleSolver {
 			char predecessor = currentState.getpredecessor();
 			switch(predecessor) {
 			case 'U':
-				next = checkNode(nodes, currentState.moveSpaceUp())
-						|| checkNode(nodes, currentState.moveSpaceLeft())
-						|| checkNode(nodes, currentState.moveSpaceRight());
+				next = checkNode(nodes, currentState.moveSpaceUp(), table)
+						|| checkNode(nodes, currentState.moveSpaceLeft(), table)
+						|| checkNode(nodes, currentState.moveSpaceRight(), table);
 				break;
 			case 'D':
-				next = checkNode(nodes, currentState.moveSpaceDown())
-						|| checkNode(nodes, currentState.moveSpaceLeft())
-						|| checkNode(nodes, currentState.moveSpaceRight());
+				next = checkNode(nodes, currentState.moveSpaceDown(), table)
+						|| checkNode(nodes, currentState.moveSpaceLeft(), table)
+						|| checkNode(nodes, currentState.moveSpaceRight(), table);
 				break;
 			case 'L':
-				next = checkNode(nodes, currentState.moveSpaceDown()) 
-						|| checkNode(nodes, currentState.moveSpaceUp())
-						|| checkNode(nodes, currentState.moveSpaceLeft());
+				next = checkNode(nodes, currentState.moveSpaceDown(), table) 
+						|| checkNode(nodes, currentState.moveSpaceUp(), table)
+						|| checkNode(nodes, currentState.moveSpaceLeft(), table);
 				break;
 			case 'R':
-				next = checkNode(nodes, currentState.moveSpaceDown()) 
-						|| checkNode(nodes, currentState.moveSpaceUp())
-						|| checkNode(nodes, currentState.moveSpaceRight());
+				next = checkNode(nodes, currentState.moveSpaceDown(), table) 
+						|| checkNode(nodes, currentState.moveSpaceUp(), table)
+						|| checkNode(nodes, currentState.moveSpaceRight(), table);
 				break;
 			default:
-				next = checkNode(nodes, currentState.moveSpaceDown()) 
-						|| checkNode(nodes, currentState.moveSpaceUp())
-						|| checkNode(nodes, currentState.moveSpaceLeft())
-						|| checkNode(nodes, currentState.moveSpaceRight());
+				next = checkNode(nodes, currentState.moveSpaceDown(), table) 
+						|| checkNode(nodes, currentState.moveSpaceUp(), table)
+						|| checkNode(nodes, currentState.moveSpaceLeft(), table)
+						|| checkNode(nodes, currentState.moveSpaceRight(), table);
 			}
 			if (next) {
 				long endTime = System.currentTimeMillis();
@@ -161,14 +163,16 @@ public class puzzleSolver {
 		return input;
 	}
 	
-	static boolean checkNode(PriorityQueue<puzzle> nodes, puzzle b) {
+	static boolean checkNode(PriorityQueue<puzzle> nodes, puzzle b, HashSet<String> table) {
 		if (b != null) {
 			if (b.isSolved()) {
 				System.out.println("Goal!!");
 				System.out.print(b);
 				return true;
 			}
-			nodes.add(b);
+			if (table.add(b.toString())) {
+				nodes.add(b);				
+			}
 		}
 		return false;
 	}
