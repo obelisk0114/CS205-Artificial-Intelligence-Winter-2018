@@ -12,6 +12,7 @@ public class puzzleSolver {
 		/*
 		//puzzleGenerator puzzle = new puzzleGenerator(7, 3);
 		puzzleGenerator puzzle = new puzzleGenerator(8);
+		//puzzle.setDiameter(100);
 		puzzle.generate();
 		*/
 		
