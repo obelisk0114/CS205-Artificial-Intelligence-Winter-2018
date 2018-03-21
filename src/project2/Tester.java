@@ -1,7 +1,7 @@
 package project2;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Tester {
 	List<DataPoint> data;
@@ -15,23 +15,23 @@ public class Tester {
 	}
 	
 	public void normalize(){
-		for(int i=0;i<data.get(0).getAttributeDimension();++i){
+		for (int i = 0; i < data.get(0).getAttributeDimension(); i++) {
 			double total = 0;
 			double average = 0;
 			double squaredDiff = 0;
 			double stdev = 0;
-			for(DataPoint dp : data){
+			for (DataPoint dp : data) {
 				double dpValue = dp.getAttribute(i);
-				total+=dpValue;
+				total += dpValue;
 			}
-			average = total/data.size();
-			for(DataPoint dp : data){
+			average = total / data.size();
+			for (DataPoint dp : data) {
 				double dpValue = dp.getAttribute(i);
-				squaredDiff+=(dpValue-average)*(dpValue-average);
+				squaredDiff += (dpValue - average) * (dpValue - average);
 			}
-			stdev = Math.sqrt(squaredDiff/data.size());
-			for(DataPoint dp : data){
-				dp.setAttribute(i,(dp.getAttribute(i)-average)/(stdev));
+			stdev = Math.sqrt(squaredDiff / data.size());
+			for (DataPoint dp : data) {
+				dp.setAttribute(i, (dp.getAttribute(i) - average) / (stdev));
 			}
 		}
 	}
@@ -61,10 +61,8 @@ public class Tester {
 		}
 		return pickedAttributes;
 	}
-
-	public List<Integer> forwardConsensusBest(){
-		final int DIVISIONS = 50;
-		final double PERCENTAGE = 0.6;
+	
+	public List<Integer> forwardConsensusBest(int DIVISIONS, double PERCENTAGE){
 		boolean[] attributeUseTable = new boolean[data.get(0).getAttributeDimension()];
 		List<Integer> pickedAttributes = new ArrayList<Integer>();
 		int slice = data.size() / DIVISIONS;
@@ -139,36 +137,36 @@ public class Tester {
 		return pickedAttributes;
 	}
 	
-	public double testAccurancy(List<Integer> attrIndex){
+	public double testAccurancy(List<Integer> attrIndex) {
 		int numOfCorrectPredictions = 0;
-		for(int i=0;i<data.size();++i){
-			if(test(i,attrIndex)){
+		for (int i = 0; i < data.size(); i++) {
+			if (test(i, attrIndex)) {
 				numOfCorrectPredictions++;
 			}
 		}
-		return ((double)numOfCorrectPredictions)/data.size();
+		return ((double) numOfCorrectPredictions) / data.size();
 	}
-	
-	public double testSubsetAccurancy(List<Integer> attrIndex,int start, int finish){
+
+	public double testSubsetAccurancy(List<Integer> attrIndex, int start, int finish) {
 		int numOfCorrectPredictions = 0;
-		for(int i=0;i<start;++i){
-			if(test(i,attrIndex)){
+		for (int i = 0; i < start; i++) {
+			if (test(i, attrIndex)) {
 				numOfCorrectPredictions++;
 			}
 		}
-		for(int i=finish;i<data.size();++i){
-			if(test(i,attrIndex)){
+		for (int i = finish; i < data.size(); i++) {
+			if (test(i, attrIndex)) {
 				numOfCorrectPredictions++;
 			}
 		}
-		return ((double)numOfCorrectPredictions)/(data.size()-(finish-start));
+		return ((double) numOfCorrectPredictions) / (data.size() - (finish - start));
 	}
-	
-	public boolean test(int index, List<Integer> attrIndex){
+
+	public boolean test(int index, List<Integer> attrIndex) {
 		DataPoint testerPoint = data.get(index);
 		double minDistanceSquared = Double.MAX_VALUE;
 		int predictedType = 0;
-		for(int i = 0;i<data.size();++i){
+		for (int i = 0; i < data.size(); i++) {
 			if(i == index){
 				continue;
 			}
@@ -188,21 +186,20 @@ public class Tester {
 	@Override
 	public String toString() {
 		String str = "Size of table: " + data.size() + "\n";
-		for(DataPoint d : data){
+		for (DataPoint d : data) {
 			str += d + "\n";
 		}
 		return str;
 	}
 	
-	
-	//HELPER FUNCTIONS
-	private String listToString(List<Integer> l){
+	// HELPER FUNCTIONS
+	private String listToString(List<Integer> l) {
 		String str = "[";
-		for(int i=0;i<l.size();++i){
-			str += l.get(i)+1 + ",";
+		for (int i = 0; i < l.size(); i++) {
+			str += l.get(i) + 1 + ",";
 		}
-		if(str.endsWith(",")){
-			str = str.substring(0, str.length()-1);
+		if (str.endsWith(",")) {
+			str = str.substring(0, str.length() - 1);
 		}
 		str += "]";
 		return str;
