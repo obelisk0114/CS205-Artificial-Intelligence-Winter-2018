@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainRunner {
-	// CS205_BIGtestdata__20.txt
+	// 205_proj2_data/CS205_BIGtestdata__20.txt
 	static String FILE_NAME = "205_proj2_data/CS205_SMALLtestdata__41.txt";
 	
 	public static void main(String[] args){
 
 		Tester mainTester = new Tester();
-		Scanner keyboard = new Scanner(System.in);
 
 		try {
 			switch (args.length) {
@@ -39,7 +38,8 @@ public class MainRunner {
 					attributes.add(lineSc.nextDouble());
 				}
 				lineSc.close();
-				mainTester.add(new DataPoint(type, attributes));
+				DataPoint data = new DataPoint(type, attributes);
+				mainTester.add(data);
 			}
 			sc.close();
 		} catch (IOException e) {
@@ -48,34 +48,19 @@ public class MainRunner {
 		mainTester.normalize();
 		
 		long startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.forwardSearchBest());
+		mainTester.testAccurancy(mainTester.forwardSearchBest(), new ArrayList<Integer>());
 		long endTime = System.currentTimeMillis();
 		System.out.println("forwardSearch =  " + (endTime - startTime) + " milliseconds\n");
 		
 		startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.backwardSearchBest());
+		mainTester.testAccurancy(mainTester.backwardSearchBest(), new ArrayList<Integer>());
 		endTime = System.currentTimeMillis();
 		System.out.println("backwardSearch = " + (endTime - startTime) + " milliseconds\n");
 
-		int DIVISIONS;
-		double PERCENTAGE;
-		try {
-			System.out.println("Input the DIVISIONS. Default: 40");
-			DIVISIONS = keyboard.nextInt();
-			System.out.println("Input the PERCENTAGE. Default: 0.7");
-			PERCENTAGE = keyboard.nextDouble();
-		} catch (NumberFormatException ne) {
-			System.out.println("Input format are wrong. Use the default one.\n "
-					+ "DIVISIONS = 40. PERCENTAGE = 0.7");
-			DIVISIONS = 40;
-			PERCENTAGE = 0.7;
-		}
-		
 		startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.forwardConsensusBest(DIVISIONS, PERCENTAGE));
+		mainTester.testAccurancy(mainTester.alwaysRemoveOne(), new ArrayList<Integer>());
 		endTime = System.currentTimeMillis();
-		keyboard.close();
-		System.out.println("Consensus = " + (endTime - startTime) + " milliseconds\n");			
+		System.out.println("RemoveOne = " + (endTime - startTime) + " milliseconds\n");			
 	}
 }
 

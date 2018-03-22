@@ -48,7 +48,7 @@ public class Tester {
 					continue;
 				}
 				tempPickedAttributes.add(i);
-				double result = testAccurancy(tempPickedAttributes);
+				double result = testAccurancy(tempPickedAttributes, new ArrayList<Integer>());
 				//System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
 				if(result > bestAccurancyThisTurn){
 					bestAccurancyThisTurn = result;
@@ -62,49 +62,30 @@ public class Tester {
 		return pickedAttributes;
 	}
 	
-	public List<Integer> forwardConsensusBest(int DIVISIONS, double PERCENTAGE){
+	public List<Integer> alwaysRemoveOne(){
 		boolean[] attributeUseTable = new boolean[data.get(0).getAttributeDimension()];
 		List<Integer> pickedAttributes = new ArrayList<Integer>();
-		int slice = data.size() / DIVISIONS;
-		boolean stop = false;
-		while(!stop&&pickedAttributes.size()!=data.get(0).getAttributeDimension()){
-			int consensusAttribute = 0;
-			int vote = 0;
-			for(int k=0;k<DIVISIONS;++k){
-				int bestAttributeToAdd = 0;
-				double bestAccurancyThisTurn = 0;
-				for(int i=0;i<attributeUseTable.length;++i){
-					List<Integer> tempPickedAttributes = new ArrayList<Integer>(pickedAttributes);
-					if(attributeUseTable[i]){
-						continue;
-					}
-					tempPickedAttributes.add(i);
-					double result = testSubsetAccurancy(tempPickedAttributes,k*slice,(k+1)*slice);
-					if(result > bestAccurancyThisTurn){
-						bestAccurancyThisTurn = result;
-						bestAttributeToAdd = i;
-					}
+		for(int j=0;j<data.get(0).getAttributeDimension();++j){
+			double bestAccurancyThisTurn = 0;
+			int bestAttributeToAdd = 0;
+			for(int i=0;i<data.get(0).getAttributeDimension();++i){
+				if(attributeUseTable[i]){
+					continue;
 				}
-				if(k==0){
-					consensusAttribute = bestAttributeToAdd;
-					vote = 1;
-				}
-				else if(consensusAttribute == bestAttributeToAdd){
-					vote ++;
-				}
-				
-				if(k==DIVISIONS-1){
-					if(vote>(DIVISIONS*PERCENTAGE)){
-						pickedAttributes.add(consensusAttribute);
-						attributeUseTable[consensusAttribute] = true;
-					}
-					else{
-						stop = true;
-					}
+				List<Integer> tempPickedAttributes = new ArrayList<Integer>(pickedAttributes);
+				List<Integer> turnAttributes = new ArrayList<Integer>();
+				turnAttributes.add(i);
+				double result = testAccurancy(turnAttributes, tempPickedAttributes);
+				//System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
+				if(result > bestAccurancyThisTurn){
+					bestAccurancyThisTurn = result;
+					bestAttributeToAdd = i;
 				}
 			}
+			pickedAttributes.add(bestAttributeToAdd);
+			attributeUseTable[bestAttributeToAdd] = true;
+			System.out.println("Feature set " + listToString(pickedAttributes) + " was best, accuracy is " + bestAccurancyThisTurn);
 		}
-		System.out.println("Set found by consensus search : " + listToString(pickedAttributes));
 		return pickedAttributes;
 	}
 	
@@ -123,7 +104,7 @@ public class Tester {
 					continue;
 				}
 				tempPickedAttributes.remove(new Integer(i));
-				double result = testAccurancy(tempPickedAttributes);
+				double result = testAccurancy(tempPickedAttributes, new ArrayList<Integer>());
 				System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
 				if(result > bestAccurancyThisTurn){
 					bestAccurancyThisTurn = result;
@@ -137,29 +118,21 @@ public class Tester {
 		return pickedAttributes;
 	}
 	
-	public double testAccurancy(List<Integer> attrIndex) {
+	public double testAccurancy(List<Integer> attrIndex, List<Integer> jump) {
 		int numOfCorrectPredictions = 0;
+		outer:
 		for (int i = 0; i < data.size(); i++) {
+			for (int j = 0; j < jump.size(); j++) {
+				if (i == jump.get(j)) {
+					continue outer;
+				}
+			}
+			
 			if (test(i, attrIndex)) {
 				numOfCorrectPredictions++;
 			}
 		}
-		return ((double) numOfCorrectPredictions) / data.size();
-	}
-
-	public double testSubsetAccurancy(List<Integer> attrIndex, int start, int finish) {
-		int numOfCorrectPredictions = 0;
-		for (int i = 0; i < start; i++) {
-			if (test(i, attrIndex)) {
-				numOfCorrectPredictions++;
-			}
-		}
-		for (int i = finish; i < data.size(); i++) {
-			if (test(i, attrIndex)) {
-				numOfCorrectPredictions++;
-			}
-		}
-		return ((double) numOfCorrectPredictions) / (data.size() - (finish - start));
+		return ((double) numOfCorrectPredictions) / (data.size() - jump.size());
 	}
 
 	public boolean test(int index, List<Integer> attrIndex) {
