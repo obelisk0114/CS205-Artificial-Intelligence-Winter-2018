@@ -48,17 +48,17 @@ public class MainRunner {
 		mainTester.normalize();
 		
 		long startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.forwardSearchBest(), new ArrayList<Integer>());
+		mainTester.testAccurancy(mainTester.forwardSearchBest());
 		long endTime = System.currentTimeMillis();
 		System.out.println("forwardSearch =  " + (endTime - startTime) + " milliseconds\n");
 		
 		startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.backwardSearchBest(), new ArrayList<Integer>());
+		mainTester.testAccurancy(mainTester.backwardSearchBest());
 		endTime = System.currentTimeMillis();
 		System.out.println("backwardSearch = " + (endTime - startTime) + " milliseconds\n");
 
 		startTime = System.currentTimeMillis();
-		mainTester.testAccurancy(mainTester.alwaysRemoveOne(), new ArrayList<Integer>());
+		mainTester.testAccurancy(mainTester.alwaysRemoveOne());
 		endTime = System.currentTimeMillis();
 		System.out.println("RemoveOne = " + (endTime - startTime) + " milliseconds\n");			
 	}

@@ -39,22 +39,25 @@ public class Tester {
 	public List<Integer> forwardSearchBest(){
 		boolean[] attributeUseTable = new boolean[data.get(0).getAttributeDimension()];
 		List<Integer> pickedAttributes = new ArrayList<Integer>();
-		for(int j=0;j<data.get(0).getAttributeDimension();++j){
+		for (int j = 0; j < data.get(0).getAttributeDimension(); j++) {
 			double bestAccurancyThisTurn = 0;
 			int bestAttributeToAdd = 0;
-			for(int i=0;i<attributeUseTable.length;++i){
+			for (int i = 0; i < attributeUseTable.length; i++) {
 				List<Integer> tempPickedAttributes = new ArrayList<Integer>(pickedAttributes);
 				if(attributeUseTable[i]){
 					continue;
 				}
+				
 				tempPickedAttributes.add(i);
-				double result = testAccurancy(tempPickedAttributes, new ArrayList<Integer>());
+				double result = testAccurancy(tempPickedAttributes);
 				//System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
+				
 				if(result > bestAccurancyThisTurn){
 					bestAccurancyThisTurn = result;
 					bestAttributeToAdd = i;
 				}
 			}
+			
 			pickedAttributes.add(bestAttributeToAdd);
 			attributeUseTable[bestAttributeToAdd] = true;
 			System.out.println("Feature set " + listToString(pickedAttributes) + " was best, accuracy is " + bestAccurancyThisTurn);
@@ -65,23 +68,25 @@ public class Tester {
 	public List<Integer> alwaysRemoveOne(){
 		boolean[] attributeUseTable = new boolean[data.get(0).getAttributeDimension()];
 		List<Integer> pickedAttributes = new ArrayList<Integer>();
-		for(int j=0;j<data.get(0).getAttributeDimension();++j){
+		for (int j = 0; j < data.get(0).getAttributeDimension(); j++) {
 			double bestAccurancyThisTurn = 0;
 			int bestAttributeToAdd = 0;
-			for(int i=0;i<data.get(0).getAttributeDimension();++i){
-				if(attributeUseTable[i]){
+			for (int i = 0; i < data.get(0).getAttributeDimension(); i++) {
+				if (attributeUseTable[i]) {
 					continue;
 				}
-				List<Integer> tempPickedAttributes = new ArrayList<Integer>(pickedAttributes);
+				
 				List<Integer> turnAttributes = new ArrayList<Integer>();
 				turnAttributes.add(i);
-				double result = testAccurancy(turnAttributes, tempPickedAttributes);
+				double result = testAccurancy(turnAttributes);
 				//System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
+				
 				if(result > bestAccurancyThisTurn){
 					bestAccurancyThisTurn = result;
 					bestAttributeToAdd = i;
 				}
 			}
+			
 			pickedAttributes.add(bestAttributeToAdd);
 			attributeUseTable[bestAttributeToAdd] = true;
 			System.out.println("Feature set " + listToString(pickedAttributes) + " was best, accuracy is " + bestAccurancyThisTurn);
@@ -104,7 +109,7 @@ public class Tester {
 					continue;
 				}
 				tempPickedAttributes.remove(new Integer(i));
-				double result = testAccurancy(tempPickedAttributes, new ArrayList<Integer>());
+				double result = testAccurancy(tempPickedAttributes);
 				System.out.println("        Using feature(s) " + listToString(tempPickedAttributes) + "accuracy is " + result);
 				if(result > bestAccurancyThisTurn){
 					bestAccurancyThisTurn = result;
@@ -118,21 +123,14 @@ public class Tester {
 		return pickedAttributes;
 	}
 	
-	public double testAccurancy(List<Integer> attrIndex, List<Integer> jump) {
+	public double testAccurancy(List<Integer> attrIndex) {
 		int numOfCorrectPredictions = 0;
-		outer:
 		for (int i = 0; i < data.size(); i++) {
-			for (int j = 0; j < jump.size(); j++) {
-				if (i == jump.get(j)) {
-					continue outer;
-				}
-			}
-			
 			if (test(i, attrIndex)) {
 				numOfCorrectPredictions++;
 			}
 		}
-		return ((double) numOfCorrectPredictions) / (data.size() - jump.size());
+		return ((double) numOfCorrectPredictions) / data.size();
 	}
 
 	public boolean test(int index, List<Integer> attrIndex) {
