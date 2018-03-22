@@ -60,7 +60,14 @@ public class MainRunner {
 		startTime = System.currentTimeMillis();
 		mainTester.testAccurancy(mainTester.alwaysRemoveOne());
 		endTime = System.currentTimeMillis();
-		System.out.println("RemoveOne = " + (endTime - startTime) + " milliseconds\n");			
+		System.out.println("RemoveOne = " + (endTime - startTime) + " milliseconds\n");
+		
+		Scanner keyboard = new Scanner(System.in);
+		System.out.println("Input the number of brute force iteration.");
+		int n = keyboard.nextInt();
+		mainTester.callBruteForce(n);
+		System.out.println();
+		keyboard.close();
 	}
 }
 

@@ -123,6 +123,30 @@ public class Tester {
 		return pickedAttributes;
 	}
 	
+	public void callBruteForce(int length) {
+		String[] res = {"-1.0", ""};
+		List<Integer> pickedAttributes = new ArrayList<Integer>(); 
+		bruteForce(0, length, pickedAttributes, res);
+		System.out.println("Feature set " + res[1] + " was best, accuracy is " + res[0]);
+	}
+	
+	private void bruteForce(int index, int length, List<Integer> attrIndex, String[] res) {
+		if (length == 0) {
+			double result = testAccurancy(attrIndex);
+			if (result > Double.parseDouble(res[0])) {
+				res[0] = String.valueOf(result);
+				res[1] = listToString(attrIndex);
+			}
+			return;
+		}
+		
+		for (int i = index; i < data.get(0).getAttributeDimension(); i++) {
+			attrIndex.add(i);
+			bruteForce(index + 1, length - 1, attrIndex, res);
+			attrIndex.remove(attrIndex.size() - 1);
+		}
+	}
+	
 	public double testAccurancy(List<Integer> attrIndex) {
 		int numOfCorrectPredictions = 0;
 		for (int i = 0; i < data.size(); i++) {
@@ -132,7 +156,7 @@ public class Tester {
 		}
 		return ((double) numOfCorrectPredictions) / data.size();
 	}
-
+	
 	public boolean test(int index, List<Integer> attrIndex) {
 		DataPoint testerPoint = data.get(index);
 		double minDistanceSquared = Double.MAX_VALUE;
@@ -151,9 +175,9 @@ public class Tester {
 				predictedType = candidatePoint.getType();
 			}
 		}
-		return testerPoint.getType()==predictedType;
+		return testerPoint.getType() == predictedType;
 	}
-	
+
 	@Override
 	public String toString() {
 		String str = "Size of table: " + data.size() + "\n";
