@@ -62,6 +62,8 @@ public class MainRunner {
 		endTime = System.currentTimeMillis();
 		System.out.println("RemoveOne = " + (endTime - startTime) + " milliseconds\n");
 		
+		mainTester.resample(3);
+		
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("Input the number of brute force iteration.");
 		int n = keyboard.nextInt();
