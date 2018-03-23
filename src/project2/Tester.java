@@ -213,7 +213,7 @@ public class Tester {
 		
 		for (int i = index; i < data.get(0).getAttributeDimension(); i++) {
 			attrIndex.add(i);
-			bruteForce(index + 1, length - 1, attrIndex, res);
+			bruteForce(i + 1, length - 1, attrIndex, res);
 			attrIndex.remove(attrIndex.size() - 1);
 		}
 	}
